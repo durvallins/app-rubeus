@@ -3,9 +3,9 @@ import requests
 import pandas as pd
 import io
 from requests.auth import HTTPBasicAuth
-from fuzzywuzzy import fuzz  # Adicionando a importação
+from fuzzywuzzy import fuzz
 
-# Acessar segredos diretamente
+# Acessar segredos diretamente do secrets.toml
 login = st.secrets["general"]["LOGIN"]
 senha = st.secrets["general"]["SENHA"]
 url_registros = st.secrets["general"]["URL_REGISTROS"]
@@ -13,8 +13,8 @@ url_contatos = st.secrets["general"]["URL_CONTATOS"]
 
 # Verificar se as variáveis foram carregadas corretamente
 if not all([login, senha, url_registros, url_contatos]):
-    st.error("Erro ao carregar variáveis de ambiente. Verifique o arquivo .env.")
-    st.stop()  # Interrompe a execução se as variáveis não estiverem carregadas
+    st.error("Erro ao carregar variáveis de ambiente. Verifique o arquivo secrets.toml.")
+    st.stop()
 
 # Função para baixar e converter CSV para DataFrame
 def baixar_csv_para_df(url):
