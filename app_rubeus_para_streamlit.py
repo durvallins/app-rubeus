@@ -4,17 +4,22 @@ import pandas as pd
 import io
 from requests.auth import HTTPBasicAuth
 from fuzzywuzzy import fuzz
+from dotenv import load_dotenv
+import os
 
-# Acessar segredos diretamente do secrets.toml
-login = st.secrets["general"]["LOGIN"]
-senha = st.secrets["general"]["SENHA"]
-url_registros = st.secrets["general"]["URL_REGISTROS"]
-url_contatos = st.secrets["general"]["URL_CONTATOS"]
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
+
+# Acessar segredos diretamente do .env
+login = os.getenv("login")
+senha = os.getenv("senha")
+url_registros = os.getenv("URL_REGISTROS")
+url_contatos = os.getenv("URL_CONTATOS")
 
 # Verificar se as variáveis foram carregadas corretamente
 if not all([login, senha, url_registros, url_contatos]):
-    st.error("Erro ao carregar variáveis de ambiente. Verifique o arquivo secrets.toml.")
-    st.stop()
+    raise ValueError("Erro ao carregar variáveis de ambiente. Verifique o arquivo .env.")
+
 
 # Função para baixar e converter CSV para DataFrame
 def baixar_csv_para_df(url):
@@ -160,17 +165,20 @@ df_merge = df_merge.reset_index(drop=True)
 def filtrar_por_processos(df, num_processos):
     return df[df['qtd_processos'] == num_processos]
 
-# Filtrar pessoas sem processos e com um processo
-pessoas_sem_processos = filtrar_por_processos(df_merge, 0).reset_index(drop=True)
-pessoas_com_um_processo = filtrar_por_processos(df_merge, 1).reset_index(drop=True)
+# Botões para mostrar leads com 0 ou 1 processos
+if st.button("Mostrar Leads com 0 Processos"):
+    leads_zero_processos = filtrar_por_processos(df_merge, 0)
+    st.success(f"Total de Leads com 0 processos: {leads_zero_processos['nome'].nunique()}")
+    st.dataframe(leads_zero_processos[['nome']], use_container_width=True)
 
-# Contar o total de pessoas
-total_pessoas_sem_processos = pessoas_sem_processos['id_x'].nunique()
-total_pessoas_com_um_processo = pessoas_com_um_processo['id_x'].nunique()
+if st.button("Mostrar Leads com 1 Processo"):
+    leads_um_processo = filtrar_por_processos(df_merge, 1)
+    st.success(f"Total de Leads com 1 processo: {leads_um_processo['nome'].nunique()}")
+    st.dataframe(leads_um_processo[['nome']], use_container_width=True)
 
-# Exibir total de pessoas
-st.info(f'Total de pessoas sem processos: {total_pessoas_sem_processos}')
-st.dataframe(pessoas_sem_processos[['id_x', 'nome']], use_container_width=True)
-
-st.info(f'Total de pessoas com um processo: {total_pessoas_com_um_processo}')
-st.dataframe(pessoas_com_um_processo[['id_x', 'nome']], use_container_width=True)
+# Exibir informações adicionais
+st.sidebar.title("Informações Adicionais")
+st.sidebar.markdown("""
+- Este aplicativo permite a visualização e análise de leads associados a processos e processos seletivos.
+- Utilize as opções para filtrar e encontrar informações relevantes sobre os leads.
+""")
