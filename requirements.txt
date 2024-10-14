@@ -1,5 +1,8 @@
-pandas
-fuzzywuzzy
-dotenv
-requests
-streamlit
+# Arquivo requirements.txt
+
+# Bibliotecas principais
+pandas==1.5.3
+fuzzywuzzy==0.18.0
+python-dotenv==1.0.0
+requests>=2.31.0  # Atualizado para atender à dependência do jupyterlab-server
+streamlit==1.17.0
