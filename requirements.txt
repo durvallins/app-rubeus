@@ -1,12 +1,8 @@
-# Arquivo requirements.txt
-
 # Bibliotecas principais
-fuzzywuzzy==0.18.0
+fuzzywuzzy==0.18.0  # Mantido como necessário, mas considere versões mais recentes
 python-dotenv==1.0.0
 requests>=2.31.0
 streamlit==1.17.0
 altair==4.2.0
 pandas>=1.5.3
 numpy>=1.23.5
-distutils
-fuzzywuzzy 
