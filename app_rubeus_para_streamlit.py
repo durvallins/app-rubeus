@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 
 # Carregar variáveis de ambiente do arquivo .env (caminho no Windows)
-load_dotenv(dotenv_path=r"D:\DataUser\Documentos\Francisco\app-rubeus\.env")
+load_dotenv(dotenv_path=r".env")
 
 # Obter as variáveis de ambiente
 login = os.getenv('login')
