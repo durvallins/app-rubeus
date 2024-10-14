@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 import os
 
 # Carregar variáveis de ambiente do arquivo .env
-# load_dotenv(dotenv_path=r".env")
-# print(os.path.isfile('.env'))
 load_dotenv()
 
 # Obter as variáveis de ambiente
@@ -25,7 +23,7 @@ if not login or not senha or not url_registros or not url_contatos:
 # Função para baixar e converter CSV para DataFrame
 def baixar_csv_para_df(url):
     try:
-        response = requests.get(url, auth=HTTPBasicAuth(login, senha))
+        response = requests.get(url, auth=HTTPBasicAuth(login, senha)) # type: ignore
         response.raise_for_status()
         csv_content = response.content.decode('utf-8')
         df = pd.read_csv(io.StringIO(csv_content), low_memory=False)
@@ -47,7 +45,7 @@ if df_registros.empty or df_contatos.empty:
     st.stop()
 
 # Verificando se as colunas 'id' e 'pessoa' existem nos DataFrames
-if 'id' not in df_contatos.columns:
+if 'id' not in df_contatos.columns: # ESSA PARTE JÁ FOI DANDO ERRO DE NAO TER LOCALZIADO AS COLUNAS ID E PESSOA, QUE SAO AS CHAVES PRA O MERGE 
     st.error("A coluna 'id' não está presente no DataFrame de contatos.")
     st.stop()
 
@@ -90,11 +88,12 @@ processo_procurado = st.selectbox("Selecione o processo:", opcoes_de_processos)
 
 # Filtrar e contar pessoas no processo selecionado
 df_processado = df_merge[df_merge['processoNome'] == processo_procurado]
-num_pessoas_associadas = df_processado['id_contatos'].nunique()
+num_pessoas_associadas = df_processado['id_x'].nunique()
+
 
 # Exibir os resultados em um formato mais destacado
 st.info(f"Total de pessoas associadas ao processo **{processo_procurado}**: {num_pessoas_associadas}")
-st.dataframe(df_processado[['id_contatos', 'nome']], use_container_width=True)
+st.dataframe(df_processado[['id_x', 'nome']], use_container_width=True)
 
 # Seção para visualização de leads por processo seletivo
 st.header("Lista de Leads por Processo Seletivo ")
@@ -109,11 +108,11 @@ ps_procurado = st.selectbox('Selecione o Processo Seletivo:', opcoes_de_ps)
 
 # Filtrar e contar pessoas no processo seletivo selecionado
 df_processado_ps = df_merge[df_merge['processoSeletivoNome'] == ps_procurado]
-num_pessoas_associadas_ao_ps = df_processado_ps['id_contatos'].nunique()
+num_pessoas_associadas_ao_ps = df_processado_ps['id_x'].nunique()
 
 # Exibir os resultados em um formato mais destacado
 st.info(f'Total de pessoas associadas ao PS **{ps_procurado}**: {num_pessoas_associadas_ao_ps}')
-st.dataframe(df_processado_ps[['id_contatos', 'nome']], use_container_width=True)
+st.dataframe(df_processado_ps[['id_x', 'nome']], use_container_width=True)
 
 # Seção para filtrar e exibir 'Inscrito Parcial' e 'Inscrito' com base no processo seletivo selecionado
 st.header(f"Visualização do Processo Seletivo: {ps_procurado}")
@@ -129,14 +128,14 @@ col1, col2 = st.columns(2)
 # Coluna 1: Exibir os dados para 'Inscrito Parcial'
 with col1:
     st.subheader("Inscrito Parcial")
-    st.write(f"Total de pessoas em 'Inscrito Parcial': {df_inscrito_parcial['id_contatos'].nunique()}")
-    st.dataframe(df_inscrito_parcial[['id_contatos', 'nome']], use_container_width=True)
+    st.write(f"Total de pessoas em 'Inscrito Parcial': {df_inscrito_parcial['id_x'].nunique()}")
+    st.dataframe(df_inscrito_parcial[['id_x', 'nome']], use_container_width=True)
 
 # Coluna 2: Exibir os dados para 'Inscrito'
 with col2:
     st.subheader("Inscrito")
-    st.write(f"Total de pessoas em 'Inscrito': {df_inscrito['id_contatos'].nunique()}")
-    st.dataframe(df_inscrito[['id_contatos', 'nome']], use_container_width=True)
+    st.write(f"Total de pessoas em 'Inscrito': {df_inscrito['id_x'].nunique()}")
+    st.dataframe(df_inscrito[['id_x', 'nome']], use_container_width=True)
 
 # Verificação de similaridade de nomes entre as etapas
 st.header("Verificação de Nomes Semelhantes entre Etapas")
@@ -144,10 +143,10 @@ st.markdown("---")
 
 # Criar uma lista para armazenar os resultados
 resultados_nomes_semelhantes = [
-    (nome_parcial, nome, fuzz.ratio(nome_parcial, nome))
+    (nome_parcial, nome, fuzz.ratio(nome_parcial, nome)) # type: ignore
     for nome_parcial in df_inscrito_parcial['nome'].tolist()
     for nome in df_inscrito['nome'].tolist()
-    if fuzz.ratio(nome_parcial, nome) > 98
+    if fuzz.ratio(nome_parcial, nome) > 98 # type: ignore
 ]
 
 # Exibir resultados
@@ -163,15 +162,15 @@ st.header("Leads com 0 ou 1 processo")
 st.markdown("---")
 
 # Criar a lista de IDs únicos com 0 ou 1 processo
-ids_unicos = df_merge['id_contatos'].value_counts()
+ids_unicos = df_merge['id_x'].value_counts()
 ids_com_zero_ou_um_processo = ids_unicos[ids_unicos <= 1].index.tolist()
 
 # Filtrar os leads correspondentes
-leads_com_zero_ou_um_processo = df_merge[df_merge['id_contatos'].isin(ids_com_zero_ou_um_processo)]
+leads_com_zero_ou_um_processo = df_merge[df_merge['id_x'].isin(ids_com_zero_ou_um_processo)]
 
 # Exibir resultados
 if not leads_com_zero_ou_um_processo.empty:
     st.success(f"Total de leads com 0 ou 1 processo: {len(leads_com_zero_ou_um_processo)}")
-    st.dataframe(leads_com_zero_ou_um_processo[['id_contatos', 'nome']], use_container_width=True)
+    st.dataframe(leads_com_zero_ou_um_processo[['id_x', 'nome']], use_container_width=True)
 else:
     st.warning("Nenhum lead com 0 ou 1 processo encontrado.")
