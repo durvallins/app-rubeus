@@ -7,8 +7,9 @@ from dotenv import load_dotenv
 import os
 
 # Carregar variáveis de ambiente do arquivo .env
-load_dotenv(dotenv_path=r".env")
-print(os.path.isfile('.env'))
+# load_dotenv(dotenv_path=r".env")
+# print(os.path.isfile('.env'))
+load_dotenv()
 
 # Obter as variáveis de ambiente
 login = os.getenv('login')
