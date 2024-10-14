@@ -6,26 +6,29 @@ from requests.auth import HTTPBasicAuth
 from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 import os
-from dotenv import load_dotenv
 
-# Carregar variáveis do arquivo .env
-load_dotenv()
+# Carregar variáveis de ambiente do arquivo .env (caminho no Windows)
+load_dotenv(dotenv_path=r"D:\DataUser\Documentos\Francisco\app-rubeus\.env")
 
-# Acessar variáveis de ambiente
-login = os.getenv("login")
-senha = os.getenv("senha")
-url_registros = os.getenv("URL_REGISTROS")
-url_contatos = os.getenv("URL_CONTATOS")
+# Obter as variáveis de ambiente
+login = os.getenv('login')
+senha = os.getenv('senha')
+url_registros = os.getenv('URL_REGISTROS')
+url_contatos = os.getenv('URL_CONTATOS')
 
-# Código de depuração
-print("Login:", login)
-print("Senha:", senha)
-print("URL Registros:", url_registros)
-print("URL Contatos:", url_contatos)
+# Depuração para verificar se as variáveis estão sendo carregadas corretamente
+st.write("Login:", login)
+st.write("Senha:", senha)
+st.write("URL Registros:", url_registros)
+st.write("URL Contatos:", url_contatos)
 
 # Verificar se as variáveis foram carregadas corretamente
-if not login or not senha:
-    raise ValueError("Erro ao carregar variáveis de ambiente. Verifique o arquivo .env.")
+if not login or not senha or not url_registros or not url_contatos:
+    st.error("Erro ao carregar variáveis de ambiente. Verifique o arquivo .env.")
+else:
+    st.success("Variáveis de ambiente carregadas com sucesso!")
+
+
 
 
 
