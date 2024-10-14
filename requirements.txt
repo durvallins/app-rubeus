@@ -1,1 +1,5 @@
+pandas
 fuzzywuzzy
+dotenv
+requests
+streamlit

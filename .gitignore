@@ -1,9 +1,37 @@
-# Ignore Jupyter Notebook files
+# Ignore arquivos do Jupyter Notebook
 *.ipynb
 
-# Outros padrões que você pode adicionar
-# Ignore arquivos de cache
+# Ignore arquivos de cache do Python
 *.pyc
 __pycache__/
+*.pyo
+*.pyd
+
+# Ignore arquivos temporários e backups
 *.tmp
 *~
+*.bak
+*.swp
+
+# Ignore variáveis de ambiente e arquivos de configuração local
+.env
+.env.*
+
+# Ignore o arquivo de segredos do Streamlit
+.secrets.toml
+
+# Ignore arquivos de logs
+*.log
+
+# Ignore diretórios de cache de IDEs (exemplo: VSCode, PyCharm)
+.vscode/
+.idea/
+
+# Ignore pacotes de dependências instalados localmente (exemplo: Python virtualenv)
+venv/
+.env/
+__pycache__/
+
+# Ignore arquivos temporários do sistema operacional
+.DS_Store
+Thumbs.db

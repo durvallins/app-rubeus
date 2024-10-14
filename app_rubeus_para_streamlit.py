@@ -1,26 +1,20 @@
+import os
 import requests
 import pandas as pd
 import io
 from requests.auth import HTTPBasicAuth
 import streamlit as st
 from fuzzywuzzy import fuzz
+from dotenv import load_dotenv
 
-# Configurações de exibição do Pandas
-pd.set_option('display.max_columns', None)
-pd.set_option('display.width', 1000)
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
 
-# Melhorias no estilo do Streamlit
-st.set_page_config(page_title="Projeto de Segmentação - Rubeus", layout="wide")
-st.title("📊 Projeto de Segmentação - Rubeus")
-st.markdown("---")
-
-# URLs dos CSVs
-url_registros = "https://automacao.rubeus.com.br/clients/reports/bi-csv/download?client_name=ASCES-UNITA&token=6820d1b13b55f897de6a301786883be4&filename=registros&subfolder=/"
-url_contatos = "https://automacao.rubeus.com.br/clients/reports/bi-csv/download?client_name=ASCES-UNITA&token=6820d1b13b55f897de6a301786883be4&filename=contatos&subfolder=/"
-
-# Credenciais
-login = "asces-unita"
-senha = "zY2eT7vNwfLTQczN"
+# Carregar credenciais e URLs seguras a partir do arquivo .secrets.toml no Streamlit
+login = st.secrets["login"]
+senha = st.secrets["senha"]
+url_registros = st.secrets["url_registros"]
+url_contatos = st.secrets["url_contatos"]
 
 # Função para baixar e converter CSV para DataFrame
 def baixar_csv_para_df(url):
@@ -189,12 +183,8 @@ def listar_processos_por_aluno(df, nome_aluno):
     return processos_aluno[['processoNome']], total_distintos
 
 # Seção interativa para busca de processos por nome de aluno
-nome_aluno = st.text_input("Insira o nome do aluno para busca de processos:", "Digite o nome...")
-processos_associados, total_processos_distintos = listar_processos_por_aluno(df_merge, nome_aluno)
-
-if not processos_associados.empty:
-    st.success(f"Processos associados a {nome_aluno}:")
-    st.dataframe(processos_associados, use_container_width=True)
-    st.info(f"Total de processos distintos: {total_processos_distintos}")
-else:
-    st.warning(f"Não foram encontrados processos associados para {nome_aluno}.")
+nome_aluno = st.text_input("Insira o nome do aluno para busca de processos:", "")
+if nome_aluno:
+    df_processos_aluno, total_processos_aluno = listar_processos_por_aluno(df_merge, nome_aluno)
+    st.write(f"O aluno **{nome_aluno}** está associado a {total_processos_aluno} processos distintos.")
+    st.dataframe(df_processos_aluno, use_container_width=True)
