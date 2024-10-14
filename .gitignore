@@ -35,3 +35,5 @@ __pycache__/
 # Ignore arquivos temporários do sistema operacional
 .DS_Store
 Thumbs.db
+
+.toml
