@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import io
 from requests.auth import HTTPBasicAuth
+from fuzzywuzzy import fuzz  # Adicionando a importação
 
 # Acessar segredos diretamente
 login = st.secrets["general"]["LOGIN"]
