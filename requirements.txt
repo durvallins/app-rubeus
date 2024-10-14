@@ -6,3 +6,4 @@ fuzzywuzzy==0.18.0
 python-dotenv==1.0.0
 requests>=2.31.0  # Atualizado para atender à dependência do jupyterlab-server
 streamlit==1.17.0
+altair==4.2.0

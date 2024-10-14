@@ -10,11 +10,11 @@ from dotenv import load_dotenv
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
-# Carregar credenciais e URLs seguras a partir do arquivo .secrets.toml no Streamlit
-login = st.secrets["login"]
-senha = st.secrets["senha"]
-url_registros = st.secrets["url_registros"]
-url_contatos = st.secrets["url_contatos"]
+# Carregar credenciais e URLs seguras a partir do arquivo .env
+login = os.getenv('LOGIN')
+senha = os.getenv('SENHA')
+url_registros = os.getenv('URL_REGISTROS')
+url_contatos = os.getenv('URL_CONTATOS')
 
 # Função para baixar e converter CSV para DataFrame
 def baixar_csv_para_df(url):
@@ -185,6 +185,6 @@ def listar_processos_por_aluno(df, nome_aluno):
 # Seção interativa para busca de processos por nome de aluno
 nome_aluno = st.text_input("Insira o nome do aluno para busca de processos:", "")
 if nome_aluno:
-    df_processos_aluno, total_processos_aluno = listar_processos_por_aluno(df_merge, nome_aluno)
-    st.write(f"O aluno **{nome_aluno}** está associado a {total_processos_aluno} processos distintos.")
-    st.dataframe(df_processos_aluno, use_container_width=True)
+    processos_aluno, total_distintos = listar_processos_por_aluno(df_merge, nome_aluno)
+    st.success(f"O aluno **{nome_aluno}** está associado a **{total_distintos}** processos distintos.")
+    st.dataframe(processos_aluno, use_container_width=True)
