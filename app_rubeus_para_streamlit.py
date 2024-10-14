@@ -1,20 +1,14 @@
-import os
+import streamlit as st
 import requests
 import pandas as pd
 import io
 from requests.auth import HTTPBasicAuth
-import streamlit as st
-from fuzzywuzzy import fuzz
-from dotenv import load_dotenv
 
-# Carregar variáveis de ambiente do arquivo .env
-load_dotenv()
-
-# Carregar credenciais e URLs seguras a partir do arquivo .env
-login = os.getenv('LOGIN')
-senha = os.getenv('SENHA')
-url_registros = os.getenv('URL_REGISTROS')
-url_contatos = os.getenv('URL_CONTATOS')
+# Acessar segredos diretamente
+login = st.secrets["general"]["LOGIN"]
+senha = st.secrets["general"]["SENHA"]
+url_registros = st.secrets["general"]["URL_REGISTROS"]
+url_contatos = st.secrets["general"]["URL_CONTATOS"]
 
 # Verificar se as variáveis foram carregadas corretamente
 if not all([login, senha, url_registros, url_contatos]):
