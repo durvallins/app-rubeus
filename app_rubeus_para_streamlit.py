@@ -16,13 +16,25 @@ senha = os.getenv('SENHA')
 url_registros = os.getenv('URL_REGISTROS')
 url_contatos = os.getenv('URL_CONTATOS')
 
+# Verificar se as variáveis foram carregadas corretamente
+if not all([login, senha, url_registros, url_contatos]):
+    st.error("Erro ao carregar variáveis de ambiente. Verifique o arquivo .env.")
+    st.stop()  # Interrompe a execução se as variáveis não estiverem carregadas
+
 # Função para baixar e converter CSV para DataFrame
 def baixar_csv_para_df(url):
-    response = requests.get(url, auth=HTTPBasicAuth(login, senha))
-    response.raise_for_status()
-    csv_content = response.content.decode('utf-8')
-    df = pd.read_csv(io.StringIO(csv_content), low_memory=False)
-    return df
+    try:
+        response = requests.get(url, auth=HTTPBasicAuth(login, senha))
+        response.raise_for_status()
+        csv_content = response.content.decode('utf-8')
+        df = pd.read_csv(io.StringIO(csv_content), low_memory=False)
+        return df
+    except requests.exceptions.HTTPError as http_err:
+        st.error(f"Erro HTTP: {http_err}")
+        return pd.DataFrame()  # Retorna um DataFrame vazio em caso de erro
+    except Exception as err:
+        st.error(f"Erro inesperado: {err}")
+        return pd.DataFrame()  # Retorna um DataFrame vazio em caso de erro
 
 # Carregar DataFrames
 df_registros = baixar_csv_para_df(url_registros)
@@ -157,34 +169,13 @@ def filtrar_por_processos(df, num_processos):
 pessoas_sem_processos = filtrar_por_processos(df_merge, 0).reset_index(drop=True)
 pessoas_com_um_processo = filtrar_por_processos(df_merge, 1).reset_index(drop=True)
 
-# Contar o número de pessoas
-total_sem_processos = pessoas_sem_processos['id_x'].nunique()
-total_com_um_processo = pessoas_com_um_processo['id_x'].nunique()
+# Contar o total de pessoas
+total_pessoas_sem_processos = pessoas_sem_processos['id_x'].nunique()
+total_pessoas_com_um_processo = pessoas_com_um_processo['id_x'].nunique()
 
-# Layout em duas colunas para visualização
-col1, col2 = st.columns(2)
+# Exibir total de pessoas
+st.info(f'Total de pessoas sem processos: {total_pessoas_sem_processos}')
+st.dataframe(pessoas_sem_processos[['id_x', 'nome']], use_container_width=True)
 
-with col1:
-    st.subheader(f"Total sem processos: {total_sem_processos}")
-    st.dataframe(pessoas_sem_processos[['id_x', 'nome']], use_container_width=True)
-
-with col2:
-    st.subheader(f"Total com 1 processo: {total_com_um_processo}")
-    st.dataframe(pessoas_com_um_processo[['id_x', 'nome']], use_container_width=True)
-
-# Seção para listar processos por aluno
-st.header("Consulta de Processos por Aluno 🧑‍🎓")
-st.markdown("---")
-
-# Função para listar processos de um aluno específico
-def listar_processos_por_aluno(df, nome_aluno):
-    processos_aluno = df[df['nome'] == nome_aluno]
-    total_distintos = processos_aluno['processoNome'].nunique()
-    return processos_aluno[['processoNome']], total_distintos
-
-# Seção interativa para busca de processos por nome de aluno
-nome_aluno = st.text_input("Insira o nome do aluno para busca de processos:", "")
-if nome_aluno:
-    processos_aluno, total_distintos = listar_processos_por_aluno(df_merge, nome_aluno)
-    st.success(f"O aluno **{nome_aluno}** está associado a **{total_distintos}** processos distintos.")
-    st.dataframe(processos_aluno, use_container_width=True)
+st.info(f'Total de pessoas com um processo: {total_pessoas_com_um_processo}')
+st.dataframe(pessoas_com_um_processo[['id_x', 'nome']], use_container_width=True)
