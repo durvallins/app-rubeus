@@ -6,19 +6,27 @@ from requests.auth import HTTPBasicAuth
 from fuzzywuzzy import fuzz
 from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
-# Carregar variáveis de ambiente do arquivo .env
+# Carregar variáveis do arquivo .env
 load_dotenv()
 
-# Acessar segredos diretamente do .env
+# Acessar variáveis de ambiente
 login = os.getenv("login")
 senha = os.getenv("senha")
 url_registros = os.getenv("URL_REGISTROS")
 url_contatos = os.getenv("URL_CONTATOS")
 
+# Código de depuração
+print("Login:", login)
+print("Senha:", senha)
+print("URL Registros:", url_registros)
+print("URL Contatos:", url_contatos)
+
 # Verificar se as variáveis foram carregadas corretamente
-if not all([login, senha, url_registros, url_contatos]):
+if not login or not senha:
     raise ValueError("Erro ao carregar variáveis de ambiente. Verifique o arquivo .env.")
+
 
 
 # Função para baixar e converter CSV para DataFrame
