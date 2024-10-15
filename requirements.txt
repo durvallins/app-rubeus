@@ -1,5 +1,5 @@
 # Bibliotecas principais
-#fuzzywuzzy==0.18.0  # Mantido como necessário, mas considere versões mais recentes
+fuzzywuzzy==0.18.0  # Mantido como necessário, mas considere versões mais recentes
 python-dotenv==1.0.0
 requests>=2.31.0
 streamlit==1.17.0

@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 import io
+from fuzzywuzzy import fuzz
 from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import os
