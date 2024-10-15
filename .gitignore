@@ -19,6 +19,7 @@ __pycache__/
 
 # Ignore o arquivo de segredos do Streamlit
 .secrets.toml
+secrets.toml
 
 # Ignore arquivos de logs
 *.log
@@ -36,4 +37,5 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-.toml
+# Ignore arquivos .toml (opcional, se não quiser incluir outros arquivos toml)
+*.toml
