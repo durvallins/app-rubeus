@@ -38,4 +38,4 @@ __pycache__/
 Thumbs.db
 
 # Ignore arquivos .toml (opcional, se não quiser incluir outros arquivos toml)
-*.toml
+#*.toml
